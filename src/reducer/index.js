@@ -62,6 +62,7 @@ const defaultState = {
     acsending: false,
     cap: [],
     name: '',
+    searchItem: [],
 }
 
 
@@ -98,17 +99,16 @@ const reducer = (state = defaultState, action) => {
             return {
                 ...state,
                 name: action.payload
-            }
+            };
+        case 'GET_SEARCH_ITEM':
+            return {
+                ...state,
+                name: action.payload
+            };
         case 'CAPS_ACSENDING':
             acsendingOrder(state);
-
         default:
             return state;
     }
 }
-
-
-
-
-
 export default reducer

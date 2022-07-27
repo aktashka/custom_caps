@@ -1,3 +1,5 @@
+import { type } from "@testing-library/user-event/dist/type"
+
 const capsRequested = () => ({
     type: 'CAPS_REQUESTED'
 })
@@ -24,6 +26,12 @@ const getCapsName = (name) => ({
     type: 'GET_CAPS_NAME',
     payload: name,
 })
+
+const getSearchItem = (valueData) => ({
+    type: 'GET_SEARCH_ITEM',
+    payload: valueData,
+}
+)
 
 const fetchCaps = (dispatch, capsService) => {
     dispatch(capsRequested())
@@ -53,4 +61,4 @@ const fetchStickers = (dispatch, capsService) => {
 }
 
 
-export { fetchCaps, capsAcsending, fetchCap, fetchStickers, getCapsName }
+export { fetchCaps, capsAcsending, fetchCap, fetchStickers, getCapsName, getSearchItem }

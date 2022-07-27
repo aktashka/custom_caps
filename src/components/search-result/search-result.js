@@ -3,11 +3,10 @@ import withCapsService from '../hoc';
 import './search-res.css'
 import SearchResultItem from './search-result-item/search-result-item';
 import { useSelector } from 'react-redux/es/hooks/useSelector';
-import { fetchCaps } from '../../actions';
 
 const SearchRes = ({ id, capsService }) => {
     const [capsName, setCapsName] = useState([])
-    const { name } = useSelector(s => s)
+    const { name, searchItem } = useSelector(s => s)
 
     const getCapsInfo = () => {
         return capsService.getAllCaps()
@@ -18,24 +17,20 @@ const SearchRes = ({ id, capsService }) => {
     useEffect(() => {
         getCapsInfo()
     }, [])
-
-
     const allFilteredCaps = capsName.filter(el => {
-        return el.brand.name.toLowerCase() === name.toLowerCase()
+        return el.brand.name.toLowerCase().includes(name.toLowerCase())
     })
 
     if (allFilteredCaps.length === 0) {
-        return <h1 className='nothing'>404 Not Found</h1>
+        return <h1 className='nothing'>Not found</h1>
     }
-
-    console.log(allFilteredCaps)
 
     return (
         <div className='result-container main-container'>
             <div className='links-container'>
                 <a href='/' className='from-page'>Поиск</a>
                 <p className='from-page'>&gt;</p>
-                <a href='/' className='to-page'>Adidas</a>
+                <a href='/' className='to-page'></a>
             </div>
             <div className='caps-catalog-flex'>
                 {
@@ -48,10 +43,6 @@ const SearchRes = ({ id, capsService }) => {
                         )
                     })
                 }
-
-
-
-
             </div>
         </div >
     )

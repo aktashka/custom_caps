@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import withCapsService from "../../hoc";
-import { getCapsName } from "../../../actions";
+import { getCapsName, getSearchItem } from "../../../actions";
 import { useDispatch } from "react-redux/es/exports";
+import { useHistory } from 'react-router-dom';
 import './search-panel.css'
 
-const SearchPanel = ({ capsService, allFilteredCapsProps }) => {
+const SearchPanel = ({ capsService }) => {
     const [searchValue, setSearchValue] = useState('')
     const [capsName, setCapsName] = useState([])
     const dispatch = useDispatch()
+    const history = useHistory()
+
 
     const getCapsInfo = () => {
         return capsService.getAllCaps()
@@ -24,38 +26,48 @@ const SearchPanel = ({ capsService, allFilteredCapsProps }) => {
         setSearchValue(e.target.value)
     }
 
+    const onFormSubmit = (e) => {
+        e.preventDefault()
+        dispatch(getSearchItem(searchValue))
+        history.push('/search-res')
+    }
+
     const filteredCaps = capsName.filter(caps => {
-        return caps.brand.name.toLowerCase().includes(searchValue.toLowerCase())
+        return caps.brand.name.toLowerCase().includes(searchValue.toLowerCase()) || caps.name.toLowerCase().includes(searchValue.toLowerCase())
     })
 
     return (
         <div className='input-container'>
             <form className="search-form"
+                onSubmit={onFormSubmit}
             >
                 <input
                     type='text'
                     onChange={onSearchChange}
                     placeholder='type to search'
                     className='search' />
+                <button onClick={() => dispatch(getSearchItem(searchValue))} className='search--btn'><i className="fa-solid fa-magnifying-glass"></i></button>
                 <ul className="search-autocomplete">
                     {
-                        searchValue
-                            ? filteredCaps.map((capsName, id) => {
-                                return (
-                                    <Link to={`/search-res/${capsName.brand.name}`} style={{ color: "black", textDecoration: 'none' }}>
-                                        <li
-                                            key={id}
-                                            className="search-item"
-                                            onClick={() => dispatch(getCapsName(capsName.brand.name))}
-                                        >
-                                            {capsName.brand.name}
-                                        </li>
-                                    </Link>
-                                )
-                            }) : null
+                        filteredCaps.map((capsName, id) => {
+                            return (
+                                searchValue ?
+                                    <div key={id}>
+                                        <a href={`/prod-info/${capsName.id}`} style={{ color: "black", textDecoration: 'none' }}>
+                                            <li
+                                                key={id}
+                                                className="search-item"
+                                                onClick={() => dispatch(getCapsName(capsName.brand.name))}
+                                            >
+                                                {capsName.brand.name}<br />
+                                                {capsName.name}
+                                            </li>
+                                        </a>
+                                    </div> : null
+                            )
+                        })
                     }
                 </ul>
-                <a href='/search-res/'><i className="fa-solid fa-magnifying-glass"></i></a>
             </form>
         </div >
     )
